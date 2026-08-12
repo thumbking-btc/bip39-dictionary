@@ -9,6 +9,12 @@
   var offlineStatus = document.getElementById("pwa-offline-status");
   var installButton = document.getElementById("pwa-install-button");
   var updateButton = document.getElementById("pwa-update-button");
+  var installDialog = document.getElementById("pwa-install-dialog");
+  var installTitle = document.getElementById("pwa-install-title");
+  var installDescription = document.getElementById("pwa-install-description");
+  var installIOSHint = document.getElementById("pwa-install-ios-hint");
+  var installConfirm = document.getElementById("pwa-install-confirm");
+  var installLater = document.getElementById("pwa-install-later");
 
   if (!panel || !toggle || !details) return;
 
@@ -18,6 +24,8 @@
   var offlineReady = false;
   var updateAvailable = false;
   var statusError = null;
+  var installInviteKey = "bip39_pwa_install_invite_until_v1";
+  var installInviteCooldown = 24 * 60 * 60 * 1000;
 
   if (toggleLabel) {
     toggleLabel.setAttribute("aria-live", "polite");
@@ -106,6 +114,91 @@
     );
   }
 
+  function isIOSSafari() {
+    var userAgent = navigator.userAgent || "";
+    var iOS =
+      /iPhone|iPad|iPod/i.test(userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var safari = /Safari/i.test(userAgent) && !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(userAgent);
+    return iOS && safari;
+  }
+
+  function installInviteSuppressed() {
+    try {
+      return Number(window.localStorage.getItem(installInviteKey) || 0) > Date.now();
+    } catch {
+      return false;
+    }
+  }
+
+  function suppressInstallInvite() {
+    try {
+      window.localStorage.setItem(
+        installInviteKey,
+        String(Date.now() + installInviteCooldown),
+      );
+    } catch {
+      // Some private browsing modes may reject storage; dismissal still works now.
+    }
+  }
+
+  function clearInstallInviteSuppression() {
+    try {
+      window.localStorage.removeItem(installInviteKey);
+    } catch {
+      // The installed state is still respected even when storage is unavailable.
+    }
+  }
+
+  function hideInstallInvite() {
+    if (!installDialog) return;
+    installDialog.hidden = true;
+    installDialog.setAttribute("aria-hidden", "true");
+  }
+
+  function showInstallInvite(mode) {
+    if (!installDialog || isStandalone() || installInviteSuppressed()) return;
+    var manualIOS = mode === "ios";
+    if (installTitle) {
+      installTitle.textContent = manualIOS
+        ? "홈 화면에 사전을 추가할까요?"
+        : "BIP39 사전을 앱으로 설치할까요?";
+    }
+    if (installDescription) {
+      installDescription.textContent = manualIOS
+        ? "Safari에서는 공유 메뉴를 통해 사전을 홈 화면에 추가할 수 있습니다."
+        : "홈 화면에서 바로 열고, 한 번 준비한 뒤에는 인터넷 연결 없이 사용할 수 있습니다.";
+    }
+    if (installIOSHint) installIOSHint.hidden = !manualIOS;
+    if (installConfirm) {
+      installConfirm.hidden = manualIOS;
+      installConfirm.disabled = false;
+      installConfirm.textContent = "앱으로 설치";
+    }
+    installDialog.hidden = false;
+    installDialog.setAttribute("aria-hidden", "false");
+    (manualIOS ? installLater : installConfirm)?.focus?.();
+  }
+
+  async function requestInstall(trigger) {
+    if (!deferredInstallPrompt) return;
+    hideInstallInvite();
+    if (trigger) trigger.disabled = true;
+    if (installButton) installButton.disabled = true;
+    try {
+      await deferredInstallPrompt.prompt();
+      var choice = await deferredInstallPrompt.userChoice;
+      if (choice?.outcome !== "accepted") suppressInstallInvite();
+    } finally {
+      deferredInstallPrompt = null;
+      if (installButton) {
+        installButton.hidden = true;
+        installButton.disabled = false;
+      }
+      if (trigger) trigger.disabled = false;
+    }
+  }
+
   function showUpdate(worker) {
     if (!worker || !updateButton) return;
     updateAvailable = true;
@@ -152,28 +245,56 @@
     event.preventDefault();
     deferredInstallPrompt = event;
     if (installButton) installButton.hidden = false;
-    showDetails();
+    showInstallInvite("native");
   });
 
   window.addEventListener("appinstalled", function () {
     deferredInstallPrompt = null;
     if (installButton) installButton.hidden = true;
+    clearInstallInviteSuppression();
+    hideInstallInvite();
     if (toggleLabel) toggleLabel.textContent = "앱 설치 완료";
   });
 
   if (installButton) {
-    installButton.addEventListener("click", async function () {
-      if (!deferredInstallPrompt) return;
-      installButton.disabled = true;
-      await deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-      installButton.hidden = true;
-      installButton.disabled = false;
+    installButton.addEventListener("click", function () {
+      requestInstall(installButton);
     });
   }
 
-  if (isStandalone() && installButton) installButton.hidden = true;
+  if (installConfirm) {
+    installConfirm.addEventListener("click", function () {
+      requestInstall(installConfirm);
+    });
+  }
+
+  if (installLater) {
+    installLater.addEventListener("click", function () {
+      suppressInstallInvite();
+      hideInstallInvite();
+    });
+  }
+
+  if (installDialog) {
+    installDialog.addEventListener("click", function (event) {
+      if (event.target !== installDialog) return;
+      suppressInstallInvite();
+      hideInstallInvite();
+    });
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape" || installDialog?.hidden !== false) return;
+    suppressInstallInvite();
+    hideInstallInvite();
+  });
+
+  if (isStandalone()) {
+    if (installButton) installButton.hidden = true;
+    hideInstallInvite();
+  } else if (isIOSSafari()) {
+    showInstallInvite("ios");
+  }
 
   if (!("serviceWorker" in navigator)) {
     setStatusError(
