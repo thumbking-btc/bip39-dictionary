@@ -1,7 +1,7 @@
 "use strict";
 
 const CACHE_PREFIX = "thumbking-btc-bip39-dictionary-pwa-";
-const CACHE_NAME = `${CACHE_PREFIX}v2.1-70c8e7172036`;
+const CACHE_NAME = `${CACHE_PREFIX}v2.1-a67b2f54f863`;
 const SCOPE_URL = new URL(self.registration.scope);
 const scopedUrl = (path) => new URL(path, SCOPE_URL).href;
 const APP_SHELL_URL = scopedUrl("./");
@@ -11,10 +11,10 @@ const PRECACHE_URLS = Object.freeze([
   scopedUrl("manifest.webmanifest"),
   scopedUrl("pwa.css"),
   scopedUrl("pwa-register.js"),
-  scopedUrl("icons/icon-192.png"),
-  scopedUrl("icons/icon-512.png"),
-  scopedUrl("icons/icon-maskable-512.png"),
-  scopedUrl("icons/apple-touch-icon.png"),
+  scopedUrl("icons/icon-192.png?v=bitcoin2"),
+  scopedUrl("icons/icon-512.png?v=bitcoin2"),
+  scopedUrl("icons/icon-maskable-512.png?v=bitcoin2"),
+  scopedUrl("icons/apple-touch-icon.png?v=bitcoin2"),
 ]);
 const PRECACHE_PATHS = new Set(
   PRECACHE_URLS.map((url) => new URL(url).pathname),
