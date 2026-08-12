@@ -5,6 +5,17 @@
   --pwa-accent: #f7931a;
 }
 
+body.pwa-dialog-open {
+  overflow: hidden;
+}
+
+.dictionary-guide .pwa-guide-install-entry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 #pwa-status-panel {
   position: fixed;
   right: max(14px, env(safe-area-inset-right));
@@ -117,7 +128,10 @@
 }
 
 .pwa-action {
+  display: inline-flex;
   min-height: 40px;
+  align-items: center;
+  justify-content: center;
   padding: 8px 14px;
   border: 1px solid rgba(15, 76, 129, 0.26);
   border-radius: 999px;
@@ -125,7 +139,15 @@
   color: var(--pwa-primary, #0f4c81);
   font: inherit;
   font-weight: 750;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
+}
+
+.pwa-action[hidden],
+#pwa-install-guide[hidden],
+.pwa-guide-install-entry[hidden] {
+  display: none !important;
 }
 
 .pwa-action-primary {
@@ -208,14 +230,14 @@
 }
 
 #pwa-install-description,
-#pwa-install-ios-hint {
+#pwa-install-manual-hint {
   margin: 12px 0 0;
   color: #4b5563;
   font-size: 14px;
   line-height: 1.6;
 }
 
-#pwa-install-ios-hint {
+#pwa-install-manual-hint {
   padding: 10px 12px;
   border-radius: 10px;
   background: #eff6ff;
@@ -234,11 +256,11 @@
   border-radius: 12px;
 }
 
-#pwa-install-confirm[hidden] + #pwa-install-later {
-  grid-column: 1 / -1;
-}
-
 @media (max-width: 760px) {
+  .dictionary-guide .pwa-guide-install-entry {
+    grid-column: 1 / -1;
+  }
+
   #pwa-status-panel {
     right: max(10px, env(safe-area-inset-right));
     bottom: max(72px, calc(env(safe-area-inset-bottom) + 64px));
@@ -258,6 +280,24 @@
     width: 100%;
     padding: 22px 18px calc(18px + env(safe-area-inset-bottom));
     border-radius: 22px;
+  }
+}
+
+@media (display-mode: standalone),
+  (display-mode: minimal-ui),
+  (display-mode: fullscreen),
+  (display-mode: window-controls-overlay) {
+  #pwa-install-button,
+  .pwa-guide-install-entry {
+    display: none !important;
+  }
+}
+
+@media print {
+  #pwa-status-panel,
+  #pwa-install-dialog,
+  .pwa-guide-install-entry {
+    display: none !important;
   }
 }
 

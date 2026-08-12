@@ -1,7 +1,7 @@
 "use strict";
 
 const CACHE_PREFIX = "thumbking-btc-bip39-dictionary-pwa-";
-const CACHE_NAME = `${CACHE_PREFIX}v2.2-f119c5e629c1`;
+const CACHE_NAME = `${CACHE_PREFIX}v2.2-cda2b9b786ee`;
 const SCOPE_URL = new URL(self.registration.scope);
 const scopedUrl = (path) => new URL(path, SCOPE_URL).href;
 const APP_SHELL_URL = scopedUrl("./");
@@ -11,6 +11,9 @@ const PRECACHE_URLS = Object.freeze([
   scopedUrl("manifest.webmanifest"),
   scopedUrl("pwa.css"),
   scopedUrl("pwa-register.js"),
+  scopedUrl("install.html"),
+  scopedUrl("install/iphone-guide-v1.png"),
+  scopedUrl("install/android-guide-v1.png"),
   scopedUrl("icons/icon-192.png?v=bitcoin2"),
   scopedUrl("icons/icon-512.png?v=bitcoin2"),
   scopedUrl("icons/icon-maskable-512.png?v=bitcoin2"),
@@ -116,7 +119,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (request.mode === "navigate") {
-    if (requestUrl.pathname === new URL(APP_SHELL_URL).pathname) {
+    if (PRECACHE_PATHS.has(requestUrl.pathname)) {
       event.respondWith(cacheFirst(request));
       return;
     }
