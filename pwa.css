@@ -1,7 +1,11 @@
-#pwa-status-panel {
+#pwa-status-panel,
+#pwa-install-dialog {
   --pwa-primary: #0f4c81;
   --pwa-surface: #ffffff;
   --pwa-accent: #f7931a;
+}
+
+#pwa-status-panel {
   position: fixed;
   right: max(14px, env(safe-area-inset-right));
   bottom: max(14px, env(safe-area-inset-bottom));
@@ -117,16 +121,16 @@
   padding: 8px 14px;
   border: 1px solid rgba(15, 76, 129, 0.26);
   border-radius: 999px;
-  background: var(--pwa-surface);
-  color: var(--pwa-primary);
+  background: var(--pwa-surface, #ffffff);
+  color: var(--pwa-primary, #0f4c81);
   font: inherit;
   font-weight: 750;
   cursor: pointer;
 }
 
 .pwa-action-primary {
-  border-color: var(--pwa-primary);
-  background: var(--pwa-primary);
+  border-color: var(--pwa-primary, #0f4c81);
+  background: var(--pwa-primary, #0f4c81);
   color: #fff;
 }
 

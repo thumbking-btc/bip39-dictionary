@@ -1,7 +1,7 @@
 "use strict";
 
 const CACHE_PREFIX = "thumbking-btc-bip39-dictionary-pwa-";
-const CACHE_NAME = `${CACHE_PREFIX}v2.1.1-ea727fb0b4a5`;
+const CACHE_NAME = `${CACHE_PREFIX}v2.1.2-e0ab501e1c0e`;
 const SCOPE_URL = new URL(self.registration.scope);
 const scopedUrl = (path) => new URL(path, SCOPE_URL).href;
 const APP_SHELL_URL = scopedUrl("./");
