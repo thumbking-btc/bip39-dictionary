@@ -229,7 +229,7 @@
       hint = "설치를 누르면 브라우저의 실제 설치 확인창이 열립니다.";
     } else if (manualMode === "ios") {
       description = "iPhone에서는 Safari의 공유 메뉴에서 홈 화면에 추가할 수 있습니다.";
-      hint = "Safari에서 공유 버튼 → 홈 화면에 추가 → 추가 순서로 진행하세요.";
+      hint = "Safari에서 공유 버튼 → 메뉴 펼치기 → 홈 화면에 추가 → 추가 순서로 진행하세요.";
     } else if (manualMode === "inapp-ios") {
       description = "현재 앱 안 브라우저에서는 홈 화면 설치 메뉴가 보이지 않을 수 있습니다.";
       hint = "브라우저 메뉴에서 Safari로 연 뒤 홈 화면에 추가하세요.";
