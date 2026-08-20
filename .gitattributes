@@ -1,0 +1,14 @@
+/.gitattributes text eol=lf
+README.md text eol=lf
+.github/workflows/*.yml text eol=lf
+source/**/*.cjs text eol=lf
+source/**/*.css text eol=lf
+source/**/*.html text eol=lf
+source/**/*.js text eol=lf
+source/**/*.json text eol=lf
+source/**/*.md text eol=lf
+source/**/*.mjs text eol=lf
+source/**/*.webmanifest text eol=lf
+source/full/*.html binary
+source/assets/*.png binary
+source/templates/**/*.png binary

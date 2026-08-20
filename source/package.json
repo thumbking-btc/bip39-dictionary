@@ -1,0 +1,20 @@
+{
+  "name": "bip39-dictionary-build",
+  "version": "2.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "node scripts/prepare-dictionary.mjs && node scripts/build-pages.cjs",
+    "verify": "node scripts/verify-source.mjs && node scripts/verify-deployment.cjs && node scripts/verify-privacy.mjs",
+    "rebuild": "npm run build && npm run verify",
+    "regenerate:icon": "node scripts/create-bitcoin-dictionary-icon.mjs",
+    "regenerate:install": "node scripts/generate-install-guides.mjs",
+    "regenerate:media": "node scripts/regenerate-static-media.mjs"
+  },
+  "dependencies": {
+    "sharp": "0.35.3"
+  }
+}
