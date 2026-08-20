@@ -36,6 +36,14 @@ PWA판과 다운로드판은 같은 사전을 바탕으로 하지만 배포 방�
 - 다운로드판: **v2.1.1**
 - 자세한 내용: [CHANGELOG.md](CHANGELOG.md)
 
+## 제작 소스와 자동 배포
+
+- 저장소 루트의 HTML·서비스 워커·아이콘은 현재 공개 중인 검증된 배포본입니다.
+- `source/`에는 Full HTML 원본, PWA 제작 소스, 이미지 원본과 검증 도구가 들어 있습니다.
+- `.github/workflows/deploy-pages.yml`은 같은 소스로 PWA를 다시 만들고 검증한 뒤 GitHub Pages에 배포합니다.
+
+자세한 제작 방법은 [`source/README.md`](source/README.md)에 정리되어 있습니다.
+
 ## 제작
 
 **엄지왕**
